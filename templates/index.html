@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Car Price Predictor | Premium Car Valuation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-gradient"></div>
+
+    <div class="container">
+        <div class="header-banner">
+            <div class="banner-content">
+                <svg class="car-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M19 17h2v.5H3v-.5h2M6 8h12v7H6z"></path>
+                    <circle cx="7" cy="17" r="1.5"></circle>
+                    <circle cx="17" cy="17" r="1.5"></circle>
+                    <path d="M9 6V4h6v2"></path>
+                </svg>
+                <h1>AI Car Price Predictor</h1>
+                <p class="subtitle">Predict your car's resale value instantly</p>
+            </div>
+        </div>
+
+        <main class="glass-card">
+            <section id="form-section" class="form-section">
+                <h2>Enter Car Details</h2>
+
+                <form id="carForm" class="form-grid">
+                    <div class="form-group">
+                        <label for="brand">Car Brand</label>
+                        <select id="brand" name="brand" required>
+                            <option value="">Select Brand</option>
+                            <option value="Maruti Suzuki">Maruti Suzuki</option>
+                            <option value="Hyundai">Hyundai</option>
+                            <option value="Tata">Tata</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Toyota">Toyota</option>
+                            <option value="Mahindra">Mahindra</option>
+                            <option value="Skoda">Skoda</option>
+                            <option value="MG">MG</option>
+                            <option value="Kia">Kia</option>
+                            <option value="Volkswagen">Volkswagen</option>
+                            <option value="Renault">Renault</option>
+                            <option value="Citroen">Citroen</option>
+                            <option value="Datsun">Datsun</option>
+                            <option value="Force">Force</option>
+                            <option value="BYD">BYD</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model">Car Model</label>
+                        <select id="model" name="model" required>
+                            <option value="">Select Model</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <select id="year" name="year" required>
+                            <option value="">Select Year</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kmsDriven">KM Driven</label>
+                        <input type="number" id="kmsDriven" name="kmsDriven" placeholder="e.g., 45000" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fuelType">Fuel Type</label>
+                        <select id="fuelType" name="fuelType" required>
+                            <option value="">Select Fuel Type</option>
+                            <option value="Petrol">Petrol</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="CNG">CNG</option>
+                            <option value="Electric">Electric</option>
+                            <option value="LPG">LPG</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transmission">Transmission</label>
+                        <select id="transmission" name="transmission" required>
+                            <option value="">Select Transmission</option>
+                            <option value="Manual">Manual</option>
+                            <option value="Automatic">Automatic</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sellerType">Seller Type</label>
+                        <select id="sellerType" name="sellerType" required>
+                            <option value="">Select Seller Type</option>
+                            <option value="Dealer">Dealer</option>
+                            <option value="Individual">Individual</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-primary" id="predictBtn" onclick="predictPrice()">
+                        <span class="btn-text">Predict Price</span>
+                        <span class="btn-icon">-&gt;</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn" onclick="resetForm()">Reset</button>
+                </div>
+
+                <div id="errorMessage" class="error-message"></div>
+            </section>
+
+            <section id="loader" class="loader hidden">
+                <div class="spinner"></div>
+                <p>Analyzing your car...</p>
+            </section>
+
+            <section id="result-section" class="result-section hidden">
+                <div class="result-header">
+                    <svg class="checkmark" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                    <h2>Your Car's Estimated Value</h2>
+                </div>
+
+                <div class="price-box">
+                    <span class="price-label">Estimated Resale Price</span>
+                    <div class="price-display" id="priceDisplay">Rs. 5.72 Lakhs</div>
+                </div>
+
+                <div class="result-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Brand:</span>
+                        <span class="detail-value" id="resultBrand">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Model:</span>
+                        <span class="detail-value" id="resultModel">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Age:</span>
+                        <span class="detail-value" id="resultAge">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">KM Driven:</span>
+                        <span class="detail-value" id="resultKms">-</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-full" onclick="resetForm()">Predict Another Car</button>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Car Price Predictor</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
